@@ -1,0 +1,68 @@
+# vim:ft=plumed
+# choose units - by default PLUMED uses kj/mol, nm, and ps
+# UNITS ENERGY=kcal/mol LENGTH=A
+MOLINFO STRUCTURE=ref.pdb
+RESTART
+RANDOM_EXCHANGES
+FLUSH STRIDE=1000
+
+INCLUDE FILE=cv-s.dat
+
+################################################################################################
+# RESTRAINS, CONSTRAINS definition
+################################################################################################
+
+eRMSD_start: ...
+  ERMSD
+  ATOMS=@lcs-1,@lcs-2,@lcs-3,@lcs-4,@lcs-5,@lcs-7,@lcs-8,@lcs-9,@lcs-10,@lcs-11,@lcs-12,@lcs-13,@lcs-14,@lcs-15,@lcs-16,@lcs-17,@lcs-18,@lcs-19,@lcs-20,@lcs-21,@lcs-22,@lcs-23,@lcs-24,@lcs-25,@lcs-26,@lcs-27,@lcs-28,@lcs-29,@lcs-30,@lcs-31,@lcs-32,@lcs-33,@lcs-34,@lcs-35,@lcs-36,@lcs-37,@lcs-38,@lcs-39,@lcs-40,@lcs-41
+  REFERENCE=ref.pdb
+...
+
+u-wall_LPR: ...
+  UPPER_WALLS
+  ARG=d1_lp1,d2_lp1,d3_lp1 AT=0.30,0.30,0.30 KAPPA=500.0,500.0,500.0 EXP=2,2,2 EPS=1,1,1 OFFSET=0,0,0
+...
+
+l-wall_aLPR: ...
+  LOWER_WALLS
+  ARG=a1_lp1,a2_lp1,a3_lp1,a4_lp1,a5_lp1 AT=2.75,2.75,2.75,2.75,2.75 KAPPA=100.0,100.0,100.0,100.0,100.0 EXP=2,2,2,2,2 EPS=1,1,1,1,1 OFFSET=0,0,0,0,0
+...
+
+LBP-rest: DISTANCES GROUPA=1328,1329,1330,1334,1336,1338,1339,1340,1341,1342 GROUPB=1,3,6,8,9,11,12,14,16,17,20,21,22,23,25,27,29,1296,1297,1300,1302,1303,1305,1306,1308,1309,1310,1311,1312,1314,1315,1318,1319,1320,1322,1324,1326 LOWEST
+
+##################################################################################################
+# WALLS (PES/FES restrictions)
+##################################################################################################
+
+u-wall_eRMSD_start: ...
+  UPPER_WALLS
+  ARG=eRMSD_start AT=0.6 KAPPA=5000.0
+...
+ 
+l-wall_LBP-rest: ...
+  LOWER_WALLS
+  ARG=LBP-rest.lowest AT=0.8 KAPPA=5000.0 EXP=2 EPS=1 OFFSET=0
+...
+
+u-wall_d-3: ...
+  UPPER_WALLS
+  ARG=d-3 AT=1.0 KAPPA=50.0
+...
+ 
+####################################################################################################
+# METADYNAMICS
+####################################################################################################
+
+metad: ...
+  METAD
+  ARG=d-3 TEMP=298.16 BIASFACTOR=5 PACE=500 HEIGHT=1.0 SIGMA=0.02
+  GRID_MIN=0.01 GRID_MAX=50.0 GRID_SPARSE FILE=HILLS_SRP-motif_BzCN
+...
+
+####################################################################################################
+# OUTPUTS
+####################################################################################################
+
+PRINT ARG=d-3,eRMSD_start,LBP-rest.lowest,metad.bias STRIDE=10 FILE=COLVAR_SRP-motif_BzCN
+PRINT ARG=u-wall_d-3.bias,l-wall_LBP-rest.bias,u-wall_eRMSD_start.bias STRIDE=10 FILE=RESTR_BIAS_SRP-motif_BzCN
+
