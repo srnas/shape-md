@@ -1,0 +1,43 @@
+title                    = constr. MD simulation of RNA sequence (with reagent)
+;Preprocessor
+cpp                      = /lib/cpp
+;Directories to include in the topology format
+;include                 = -I../top
+;Run control: A leap-frog algorithm for integrating Newton's equations. 
+integrator               = md
+;Total simulation time: 100 ps
+dt                       = 0.002
+nsteps                   = -1           ;number of steps
+nstxout                  = 5000
+nstvout                  = 5000
+nstlog                   = 500
+nstenergy                = 500
+nstxtcout                = 5000
+energygrps               = RNA-fix BCN_K_SOL       ;group(s) to write to energy file 
+nstlist                  = 10                   ;Frequency to update the neighbor list (and the long-range forces, 
+                                                ;when using twin-range cut-off's). 
+ns_type                  = grid                 ;Make a grid in the box and only check atoms in neighboring grid cells 
+                                                ;when constructing a new neighbor list every nstlist steps. 
+cutoff-scheme		 = Verlet
+coulombtype 		 = PME 
+rvdw 			 = 1.0
+rlist 			 = 1.0
+rcoulomb 		 = 1.0
+;fourierspacing 	 = 0.12 
+pbc                      = xyz                  ; Periodic boudary conditions in all the directions 
+tcoupl                   = v-rescale            ; Temperature coupling
+tc-grps                  = RNA-fix BCN_K_SOL
+tau_t                    = 0.1 0.1
+ref_t                    = 298.16 298.16
+Pcoupl                   = no                   ; Pressure coupling
+gen_vel                  = yes                  ; Velocity generation
+gen_temp                 = 298.16
+gen_seed                 = -1
+DispCorr       		 = EnerPres  	        ; account for cut-off vdW scheme
+;Constrain
+constraints              = H-bonds
+freezegrps		 = RNA-fix
+freezedim 		 = Y Y Y
+; energygrp-excl		 = RNA-fix RNA-fix
+EOF
+
