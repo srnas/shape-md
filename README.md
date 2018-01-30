@@ -1,4 +1,5 @@
-This repository contains additional supporting files for the paper "MD Simulations Reveal an Interplay between Reagent Binding and RNA Dynamics behind SHAPE Chemistry", Mlynsky and Bussi, submitted.
+This repository contains additional supporting files for the paper "Molecular Simulations Reveal an Interplay Between SHAPE Reagent Binding and RNA Flexibilty, J. Phys. Chem. Lett., 2018, 9 (2), pp 313–318" by Vojtech Mlynsky and Giovanni Bussi.
+In case you find it useful, please cite that paper.
 
 - folder `pdb-s_all-clusters` contains coordinates (pdb format) of SRP-RNA with BzCN reagent for all clusters
 - files `SRP-RNA_BzCN` are GROMACS input files for enhanced sampling simulations of SRP-RNA with BzCN reagent
